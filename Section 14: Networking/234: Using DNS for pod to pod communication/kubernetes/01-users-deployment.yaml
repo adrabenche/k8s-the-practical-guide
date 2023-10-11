@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+        - name: users
+          image: adrabenche/k8s-the-practical-guide:users-api-234
+          imagePullPolicy: Always
+          env:
+            - name: AUTH_ADDRESS
+              valueFrom: 
+                configMapKeyRef:
+                  name: application-env
+                  key: AUTH_ADDRESS
+        - name: auth
+          image: adrabenche/k8s-the-practical-guide:auth-api-230
+          imagePullPolicy: Always
