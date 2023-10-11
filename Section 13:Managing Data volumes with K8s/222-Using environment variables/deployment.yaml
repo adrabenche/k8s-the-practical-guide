@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: story-deployment
 spec: 
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: story
@@ -14,13 +14,19 @@ spec:
     spec:
       containers:
         - name: story
-          image: adrabenche/k8s-the-practical-guide:214
+          image: adrabenche/k8s-the-practical-guide:222
+          env:
+            - name: STORY_FOLDER
+              # value: 'story'
+              valueFrom: 
+                configMapKeyRef:
+                  name: data-store-env
+                  key: folder
           volumeMounts:
             - mountPath: /app/story
               name: story-volume
+
       volumes:
-        - name: temp-volume
-          emptyDir: {}
         - name: story-volume
           persistentVolumeClaim:
             claimName: gcloud-pvc
